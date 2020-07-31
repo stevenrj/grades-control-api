@@ -15,8 +15,8 @@ const validate = {
     if (!grade.id) {
       validate.error()
     }
-    if (body) {
-      validate.post(body)
+    if (!body.student && !body.subject && !body.type && (body.value === null || body.value === undefined)) {
+      validate.error()
     }
   }
 }
@@ -134,10 +134,11 @@ router.put('/', async (req, res, next) => {
     validate.put(grade, req.body)
 
     const { student, subject, type, value } = req.body
-    grade.student = student
-    grade.subject = subject
-    grade.type = type
-    grade.value = value
+
+    student ? grade.student = student:
+    subject ? grade.subject = subject:
+    type    ? grade.type = type:
+    value   ? grade.value = value:
     grade.timestamp = new Date().toLocaleString()
 
     await fs.writeFile(global.gradesJSON, JSON.stringify(gradesFile, null, 2))
